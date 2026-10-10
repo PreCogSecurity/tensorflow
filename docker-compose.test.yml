@@ -1,0 +1,76 @@
+# Test Override for Docker Compose
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.test.yml run --rm test
+
+version: '3.8'
+
+services:
+  test:
+    build:
+      target: development
+    command: >
+      python -m pytest
+      tensorflow/python/framework/
+      tensorflow/python/ops/
+      tensorflow/python/kernel_tests/
+      -v --tb=short
+      --timeout=180
+      -x
+      --cov=tensorflow/python
+      --cov-report=term-missing
+      --cov-report=xml:/home/tensorflow/coverage.xml
+      --cov-report=html:/home/tensorflow/htmlcov
+      -n auto
+    volumes:
+      - ./tensorflow:/home/tensorflow/tensorflow:ro
+      - test-results:/home/tensorflow/test-results
+      - coverage-data:/home/tensorflow/.coverage
+      - ./htmlcov:/home/tensorflow/htmlcov:rw
+    environment:
+      - TF_CPP_MIN_LOG_LEVEL=2
+      - PYTHONPATH=/home/tensorflow/tensorflow
+      - PYTEST_ADDOPTS=--strict-markers --strict-config -ra
+
+  lint:
+    build:
+      target: development
+    command: >
+      bash -c "
+        set -e
+        echo '=== Running pylint ==='
+        pylint --rcfile=.pylintrc tensorflow/python --output-format=parseable --score=yes
+        echo '=== Running black ==='
+        black --check --diff tensorflow/python
+        echo '=== Running isort ==='
+        isort --check-only --diff tensorflow/python
+        echo '=== Running mypy ==='
+        mypy --config-file=pyproject.toml tensorflow/python --ignore-missing-imports
+      "
+    volumes:
+      - ./tensorflow:/home/tensorflow/tensorflow:ro
+    environment:
+      - TF_CPP_MIN_LOG_LEVEL=2
+
+  security:
+    build:
+      target: development
+    command: >
+      bash -c "
+        set -e
+        echo '=== Running bandit ==='
+        bandit -r tensorflow/python -f json -o /home/tensorflow/bandit-report.json --severity-level medium --confidence-level medium
+        echo '=== Running safety ==='
+        safety check --json --output /home/tensorflow/safety-report.json
+        echo '=== Running pip-audit ==='
+        pip-audit --format=json --output=/home/tensorflow/pip-audit-report.json
+        echo '=== Security scan complete ==='
+      "
+    volumes:
+      - ./tensorflow:/home/tensorflow/tensorflow:ro
+      - security-reports:/home/tensorflow/reports
+    environment:
+      - TF_CPP_MIN_LOG_LEVEL=2
+
+volumes:
+  test-results:
+  coverage-data:
+  security-reports:
