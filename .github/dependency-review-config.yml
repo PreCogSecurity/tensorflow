@@ -1,0 +1,31 @@
+# Dependency Review Configuration
+# Fails PRs that introduce vulnerable or malicious dependencies
+
+# Severity thresholds
+fail-on-severity: high
+
+# Allow specific vulnerabilities with justification
+allow-list:
+  # Example format:
+  # - ghsa-xxxx-xxxx-xxxx: "Justification for allowing this vulnerability"
+
+# Deny specific licenses
+deny-licenses:
+  - GPL-3.0-only
+  - AGPL-3.0-only
+  - SSPL-1.0
+
+# Allow specific licenses
+allow-licenses:
+  - Apache-2.0
+  - MIT
+  - BSD-2-Clause
+  - BSD-3-Clause
+  - ISC
+  - Python-2.0
+  - MPL-2.0
+  - LGPL-2.1-only
+  - LGPL-3.0-only
+
+# Scope to check
+scope: runtime

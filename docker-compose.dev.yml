@@ -1,0 +1,30 @@
+# Development Override for Docker Compose
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+
+version: '3.8'
+
+services:
+  dev:
+    build:
+      target: development
+    volumes:
+      - ./tensorflow:/home/tensorflow/tensorflow:rw
+      - ~/.gitconfig:/home/tensorflow/.gitconfig:ro
+      - ~/.ssh:/home/tensorflow/.ssh:ro
+    environment:
+      - TF_CPP_MIN_LOG_LEVEL=0
+      - PYTHONPATH=/home/tensorflow/tensorflow
+    command: bash
+
+  jupyter:
+    build:
+      target: development
+    volumes:
+      - ./tensorflow:/home/tensorflow/tensorflow:ro
+      - jupyter-data:/home/tensorflow/.jupyter
+    environment:
+      - JUPYTER_TOKEN=tensorflow-dev
+
+  tensorboard:
+    volumes:
+      - ./logs:/home/tensorflow/logs:rw

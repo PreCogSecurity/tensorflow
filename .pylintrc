@@ -1,0 +1,360 @@
+[MASTER]
+
+# Specify a configuration file.
+#rcfile=
+
+# Python code to execute, usually for sys.path manipulation such as
+# pygtk.require().
+#init-hook=
+
+# Profiled execution.
+profile=no
+
+# Add files or directories to the blacklist. They should be base names, not
+# paths.
+ignore=CVS,.git,__pycache__,bazel-*,third_party,external
+
+# Pickle collected data for later comparisons.
+persistent=yes
+
+# List of plugins (as comma separated values of python modules names) to load,
+# usually to register additional checkers.
+load-plugins=
+
+# Enable all messages by default, then disable specific ones below
+enable=all
+
+[MESSAGES CONTROL]
+
+# Disable the message, report, category or checker with the given id(s).
+# We disable categories that are too noisy for this codebase but keep
+# security-relevant and correctness checks enabled.
+disable=
+    # Design issues - too many in legacy codebase
+    too-many-lines,
+    too-many-arguments,
+    too-many-locals,
+    too-many-return-statements,
+    too-many-branches,
+    too-many-statements,
+    too-many-parents,
+    too-many-attributes,
+    too-many-public-methods,
+    too-few-public-methods,
+    # Similarities - legacy code has duplication
+    duplicate-code,
+    # Naming conventions - legacy codebase uses mixed styles
+    invalid-name,
+    # Missing docstrings - legacy codebase
+    missing-module-docstring,
+    missing-class-docstring,
+    missing-function-docstring,
+    missing-final-newline,
+    # Import issues - legacy codebase structure
+    wrong-import-order,
+    wrong-import-position,
+    unused-import,
+    unused-variable,
+    unused-argument,
+    # Broad exception handling - common in legacy code
+    broad-except,
+    # Protected access - common in test code
+    protected-access,
+    # Star imports - used in __init__.py files
+    wildcard-import,
+    # Global statements - used in some modules
+    global-statement,
+    # Fixme comments - many in legacy code
+    fixme,
+    # Line too long - many in generated/legacy code
+    line-too-long,
+    # Consider using - style suggestions
+    consider-using-f-string,
+    consider-using-with,
+    consider-iterating-dictionary,
+    # Logging format - legacy uses custom logging
+    logging-format-interpolation,
+    logging-not-lazy,
+    # Abstract class - legacy patterns
+    abstract-method,
+    # Arguments differ - legacy overrides
+    arguments-differ,
+    # Signature differs - legacy overrides
+    signature-differs,
+    # Super init not called - legacy patterns
+    super-init-not-called,
+    # Init sub-class - legacy patterns
+    non-parent-init-called,
+    # Bad super call - legacy patterns
+    bad-super-call,
+    # Method hidden - legacy patterns
+    method-hidden,
+    # Attribute defined outside init - common in dynamic code
+    attribute-defined-outside-init,
+    # No self use - common in base classes
+    no-self-use,
+    # No member - dynamic attributes common in TF
+    no-member,
+    # No name in module - dynamic imports
+    no-name-in-module,
+    # Import error - dynamic imports
+    import-error,
+    # Unsubscriptable object - dynamic types
+    unsubscriptable-object,
+    # Unbalanced tuple unpacking - dynamic code
+    unbalanced-tuple-unpacking,
+    # Undefined variable - dynamic code
+    undefined-variable,
+    # Pointless except - legacy patterns
+    pointless-except,
+    # Bad option value - legacy patterns
+    bad-option-value,
+    # Suppressed message - legacy patterns
+    suppressed-message,
+    # Useless suppression - legacy patterns
+    useless-suppression,
+    # Locally disabled/enabled - legacy patterns
+    locally-disabled,
+    locally-enabled,
+    # Star args - legacy patterns
+    star-args,
+    # Global statement - legacy patterns
+    global-statement,
+
+# Security-relevant checks - KEEP ENABLED
+# dangerous-default-value
+# eval-used
+# exec-used
+# import-star-module-level
+# deprecated-module
+# bad-open-mode
+# subprocess-popen-preexec-fn
+# subprocess-run-check
+# shell-invocation
+
+[REPORTS]
+
+# Set the output format. Available formats are text, parseable, colorized, msvs
+# (visual studio) and html. You can also give a reporter class, eg
+# mypackage.mymodule.MyReporterClass.
+output-format=colorized
+
+# Put messages in a separate file for each module / package specified on the
+# command line instead of printing them on stdout. Reports (if any) will be
+# written in a file name "pylint_global.[txt|html]".
+files-output=no
+
+# Tells whether to display a full report or only the messages
+reports=yes
+
+# Python expression which should return a note less than 10 (10 is the highest
+# note). You have access to the variables errors warning, statement which
+# respectively contain the number of errors / warnings messages and the total
+# number of statements analyzed. This is used by the global evaluation report
+# (RP0004).
+evaluation=10.0 - ((float(5 * error + warning + refactor + convention) / statement) * 10)
+
+# Add a comment according to your evaluation note. This is used by the global
+# evaluation report (RP0004).
+comment=no
+
+# Template used to display messages. This is a python new-style format string
+# used to format the message information. See doc for all details
+msg-template={path}:{line}:{column}: {msg_id} ({symbol}) {obj} {msg}
+
+[TYPECHECK]
+
+# Tells whether missing members accessed in mixin class should be ignored. A
+# mixin class is detected if its name ends with "mixin" (case insensitive).
+ignore-mixin-members=yes
+
+# List of classes names for which member attributes should not be checked
+# (useful for classes with attributes dynamically set).
+ignored-classes=SQLObject,optparse.Values,threading._Thread,_thread._local
+
+# When zope mode is activated, add a predefined set of Zope acquired attributes
+# to generated-members.
+zope=no
+
+# List of members which are set dynamically and missed by pylint inference
+# system, and so shouldn't trigger E0201 when accessed. Python regular
+# expressions are accepted.
+generated-members=REQUEST,acl_users,aq_parent,*
+
+[VARIABLES]
+
+# Tells whether we should check for unused import in __init__ files.
+init-import=no
+
+# A regular expression matching the beginning of the name of dummy variables
+# (i.e. not used).
+dummy-variables-rgx=_$|dummy|unused
+
+# List of additional names supposed to be defined in builtins. Remember that
+# you should avoid to define new builtins when possible.
+additional-builtins=
+
+[BASIC]
+
+# Required attributes for module, separated by a comma
+required-attributes=
+
+# List of builtins function names that should not be used, separated by a comma
+bad-functions=apply,input,reduce,exec,eval
+
+# Regular expression which should only match correct module names
+module-rgx=(([a-z_][a-z0-9_]*)|([A-Z][a-zA-Z0-9]+))$
+
+# Regular expression which should only match correct module level names
+const-rgx=^(_?[A-Z][A-Z0-9_]*|__[a-z0-9_]+__|_?[a-z][a-z0-9_]*)$
+
+# Regular expression which should only match correct class names
+class-rgx=^_?[A-Z][a-zA-Z0-9]*$
+
+# Regular expression which should only match correct function names
+function-rgx=^(?:(?P<camel_case>_?[A-Z][a-zA-Z0-9]*)|(?P<snake_case>_?[a-z][a-z0-9_]*))$
+
+# Regular expression which should only match correct method names
+method-rgx=^(?:(?P<exempt>__[a-z0-9_]+__|next)|(?P<camel_case>_{0,2}[A-Z][a-zA-Z0-9]*)|(?P<snake_case>_{0,2}[a-z][a-z0-9_]*))$
+
+# Regular expression which should only match correct instance attribute names
+attr-rgx=^_{0,2}[a-z][a-z0-9_]*$
+
+# Regular expression which should only match correct argument names
+argument-rgx=^[a-z][a-z0-9_]*$
+
+# Regular expression which should only match correct variable names
+variable-rgx=^[a-z][a-z0-9_]*$
+
+# Regular expression which should only match correct attribute names in class
+# bodies
+class-attribute-rgx=^(_?[A-Z][A-Z0-9_]*|__[a-z0-9_]+__|_?[a-z][a-z0-9_]*)$
+
+# Regular expression which should only match correct list comprehension /
+# generator expression variable names
+inlinevar-rgx=^[a-z][a-z0-9_]*$
+
+# Good variable names which should always be accepted, separated by a comma
+good-names=main,_,i,j,k,ex,Run,_,tf,np,pd,os,sys,json,re,math,random,itertools,collections,functools,pathlib,typing,dataclasses,enum,uuid,datetime,time,decimal,fractions,hashlib,hmac,secrets,base64,binascii,inspect,contextlib,dataclass,field
+
+# Bad variable names which should always be refused, separated by a comma
+bad-names=foo,bar,baz,toto,tutu,tata
+
+# Regular expression which should only match function or class names that do
+# not require a docstring.
+no-docstring-rgx=^_.*__$|^main$|^setUp$|^tearDown$|^test_
+
+# Minimum line length for functions/classes that require docstrings, shorter
+# ones are exempt.
+docstring-min-length=10
+
+[FORMAT]
+
+# Maximum number of characters on a single line.
+max-line-length=100
+
+# Regexp for a line that is allowed to be longer than the limit.
+ignore-long-lines=^\s*(# )?<?https?://\S+>?$|^\s*#.*$
+
+# Allow the body of an if to be on the same line as the test if there is no
+# else.
+single-line-if-stmt=y
+
+# List of optional constructs for which whitespace checking is disabled
+no-space-check=trailing-comma,dict-separator
+
+# Maximum number of lines in a module
+max-module-lines=2000
+
+# String used as indentation unit. This usually " " (4 spaces) or "\t" (1 tab).
+indent-string='    '
+
+[SIMILARITIES]
+
+# Minimum lines number of a similarity.
+min-similarity-lines=4
+
+# Ignore comments when computing similarities.
+ignore-comments=yes
+
+# Ignore docstrings when computing similarities.
+ignore-docstrings=yes
+
+# Ignore imports when computing similarities.
+ignore-imports=no
+
+[MISCELLANEOUS]
+
+# List of note tags to take in consideration, separated by a comma.
+notes=TODO,FIXME,XXX,HACK,SECURITY,AUDIT
+
+[IMPORTS]
+
+# Deprecated modules which should not be used, separated by a comma
+deprecated-modules=regsub,TERMIOS,Bastion,rexec,sets,imp,optparse,commands
+
+# Create a graph of every (i.e. internal and external) dependencies in the
+# given file (report RP0402 must not be disabled)
+import-graph=
+
+# Create a graph of external dependencies in the given file (report RP0402 must
+# not be disabled)
+ext-import-graph=
+
+# Create a graph of internal dependencies in the given file (report RP0402 must
+# not be disabled)
+int-import-graph=
+
+[CLASSES]
+
+# List of interface methods to ignore, separated by a comma. This is used for
+# instance to not check methods defines in Zope's Interface base class.
+ignore-iface-methods=isImplementedBy,deferred,extends,names,namesAndDescriptions,queryDescriptionFor,getBases,getDescriptionFor,getDoc,getName,getTaggedValue,getTaggedValueTags,isEqualOrExtendedBy,setTaggedValue,isImplementedByInstancesOf,adaptWith,is_implemented_by
+
+# List of method names used to declare (i.e. assign) instance attributes.
+defining-attr-methods=__init__,__new__,setUp,tearDown
+
+# List of valid names for the first argument in a class method.
+valid-classmethod-first-arg=cls,class_
+
+# List of valid names for the first argument in a metaclass class method.
+valid-metaclass-classmethod-first-arg=mcs
+
+[DESIGN]
+
+# Maximum number of arguments for function / method
+max-args=7
+
+# Argument names that match this expression will be ignored. Default to name
+# with leading underscore
+ignored-argument-names=_.*
+
+# Maximum number of locals for function / method body
+max-locals=20
+
+# Maximum number of return / yield for function / method body
+max-returns=8
+
+# Maximum number of branch for function / method body
+max-branches=15
+
+# Maximum number of statements in function / method body
+max-statements=60
+
+# Maximum number of parents for a class (see R0901).
+max-parents=10
+
+# Maximum number of attributes for a class (see R0902).
+max-attributes=15
+
+# Minimum number of public methods for a class (see R0903).
+min-public-methods=1
+
+# Maximum number of public methods for a class (see R0904).
+max-public-methods=30
+
+[EXCEPTIONS]
+
+# Exceptions that will emit a warning when being caught. Defaults to
+# "Exception"
+overgeneral-exceptions=Exception,BaseException,StandardError

@@ -1,0 +1,402 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel>=0.38.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tensorflow"
+version = "0.8.0"
+description = "TensorFlow helps the tensors flow"
+readme = "README.md"
+license = {text = "Apache 2.0"}
+authors = [
+    {name = "Google Inc.", email = "opensource@google.com"}
+]
+maintainers = [
+    {name = "TensorFlow Team", email = "tensorflow-dev@googlegroups.com"}
+]
+keywords = [
+    "tensorflow",
+    "tensor",
+    "machine learning",
+    "deep learning",
+    "neural networks",
+    "AI"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Libraries",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "numpy>=1.22.0",
+    "six>=1.16.0",
+    "protobuf>=3.20.0,<5.0.0",
+]
+[project.optional-dependencies]
+test = [
+    "scipy>=1.10.0",
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "pytest-xdist>=3.3.0",
+    "pytest-timeout>=2.1.0",
+]
+dev = [
+    "pylint>=3.0.0",
+    "black>=23.0.0",
+    "isort>=5.12.0",
+    "mypy>=1.5.0",
+    "types-protobuf>=3.20.0",
+    "bandit>=1.7.0",
+    "safety>=2.3.0",
+    "pip-audit>=2.6.0",
+]
+gpu = [
+    # GPU dependencies are handled via system packages (CUDA, cuDNN)
+]
+tensorboard = [
+    "tensorboard>=2.13.0",
+]
+docs = [
+    "sphinx>=7.0.0",
+    "sphinx-rtd-theme>=1.3.0",
+    "numpydoc>=1.5.0",
+]
+
+[project.urls]
+Homepage = "https://www.tensorflow.org/"
+Repository = "https://github.com/tensorflow/tensorflow"
+Documentation = "https://www.tensorflow.org/api_docs"
+Issues = "https://github.com/tensorflow/tensorflow/issues"
+Changelog = "https://github.com/tensorflow/tensorflow/releases"
+
+[project.scripts]
+tensorboard = "tensorflow.tensorboard.tensorboard:main"
+
+[tool.setuptools]
+packages = {find = {}}
+package-dir = {"" = "tensorflow"}
+include-package-data = true
+
+[tool.setuptools.package-data]
+"tensorflow" = [
+    "python/_pywrap_tensorflow.so",
+    "tensorboard/dist/index.html",
+    "tensorboard/dist/tf-tensorboard.html",
+    "tensorboard/lib/css/global.css",
+]
+
+[tool.setuptools.exclude-package-data]
+"*" = ["*.pyc", "__pycache__", "*.so", "*.dll", "*.dylib", "bazel-*", "external", "third_party"]
+
+[tool.pytest.ini_options]
+testpaths = [
+    "tensorflow/python",
+]
+python_files = ["*_test.py"]
+python_classes = ["*Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "-ra",
+    "--tb=short",
+    "--timeout=120",
+]
+markers = [
+    "gpu: marks tests as requiring GPU",
+    "slow: marks tests as slow",
+    "integration: marks tests as integration tests",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::PendingDeprecationWarning",
+]
+
+[tool.coverage.run]
+source = ["tensorflow/python"]
+omit = [
+    "*_test.py",
+    "*/test*/**",
+    "*/tests/**",
+    "tensorflow/python/platform/*",
+    "tensorflow/tools/**",
+    "tensorflow/examples/**",
+    "tensorflow/contrib/**",
+]
+branch = true
+concurrency = ["thread", "multiprocessing"]
+parallel = true
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
+precision = 2
+show_missing = true
+skip_covered = false
+
+[tool.coverage.html]
+directory = "htmlcov"
+
+[tool.coverage.xml]
+output = "coverage.xml"
+
+[tool.pylint.master]
+ignore = ["CVS", ".git", "__pycache__", "bazel-*", "third_party", "external"]
+persistent = true
+load-plugins = []
+enable = "all"
+
+[tool.pylint.messages-control]
+disable = [
+    "too-many-lines",
+    "too-many-arguments",
+    "too-many-locals",
+    "too-many-return-statements",
+    "too-many-branches",
+    "too-many-statements",
+    "too-many-parents",
+    "too-many-attributes",
+    "too-many-public-methods",
+    "too-few-public-methods",
+    "duplicate-code",
+    "invalid-name",
+    "missing-module-docstring",
+    "missing-class-docstring",
+    "missing-function-docstring",
+    "missing-final-newline",
+    "wrong-import-order",
+    "wrong-import-position",
+    "unused-import",
+    "unused-variable",
+    "unused-argument",
+    "broad-except",
+    "protected-access",
+    "wildcard-import",
+    "global-statement",
+    "fixme",
+    "line-too-long",
+    "consider-using-f-string",
+    "consider-using-with",
+    "consider-iterating-dictionary",
+    "logging-format-interpolation",
+    "logging-not-lazy",
+    "abstract-method",
+    "arguments-differ",
+    "signature-differs",
+    "super-init-not-called",
+    "non-parent-init-called",
+    "bad-super-call",
+    "method-hidden",
+    "attribute-defined-outside-init",
+    "no-self-use",
+    "no-member",
+    "no-name-in-module",
+    "import-error",
+    "unsubscriptable-object",
+    "unbalanced-tuple-unpacking",
+    "undefined-variable",
+    "pointless-except",
+    "bad-option-value",
+    "suppressed-message",
+    "useless-suppression",
+    "locally-disabled",
+    "locally-enabled",
+    "star-args",
+]
+
+[tool.pylint.format]
+max-line-length = 100
+indent-string = "    "
+max-module-lines = 2000
+
+[tool.pylint.design]
+max-args = 7
+max-locals = 20
+max-returns = 8
+max-branches = 15
+max-statements = 60
+max-parents = 10
+max-attributes = 15
+min-public-methods = 1
+max-public-methods = 30
+
+[tool.pylint.exceptions]
+overgeneral-exceptions = ["Exception", "BaseException", "StandardError"]
+
+[tool.black]
+line-length = 100
+target-version = ["py38", "py39", "py310", "py311", "py312"]
+include = '\\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+  | bazel-*
+  | external
+  | third_party
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 100
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+skip_gitignore = true
+known_first_party = ["tensorflow"]
+known_third_party = ["numpy", "six", "protobuf", "scipy", "absl", "google"]
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+check_untyped_defs = true
+disallow_untyped_decorators = false
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+strict_equality = true
+ignore_missing_imports = true
+namespace_packages = true
+explicit_package_bases = true
+show_error_codes = true
+pretty = true
+
+[[tool.mypy.overrides]]
+module = [
+    "tensorflow.*",
+    "google.*",
+    "absl.*",
+]
+ignore_missing_imports = true
+
+[tool.bandit]
+targets = ["tensorflow/python"]
+exclude_dirs = ["third_party", "external", "bazel-*", "examples", "tools"]
+skips = [
+    "B101",  # assert_used
+    "B104",  # hardcoded_bind_all_interfaces
+    "B105",  # hardcoded_password_string
+    "B106",  # hardcoded_password_funcarg
+    "B107",  # hardcoded_password_default
+    "B108",  # hardcoded_tmp_directory
+    "B109",  # hardcoded_password_string
+    "B110",  # try_except_pass
+    "B111",  # try_except_pass
+    "B112",  # try_except_pass
+    "B301",  # pickle
+    "B302",  # marshal
+    "B303",  # md5
+    "B304",  # ciphers
+    "B305",  # ciphers
+    "B306",  # mktemp_q
+    "B307",  # eval
+    "B308",  # mark_safe
+    "B309",  # httpsconnection
+    "B310",  # urllib_urlopen
+    "B311",  # random
+    "B312",  # telnetlib
+    "B313",  # xml_bad_cElementTree
+    "B314",  # xml_bad_ElementTree
+    "B315",  # xml_bad_expatreader
+    "B316",  # xml_bad_expatbuilder
+    "B317",  # xml_bad_sax
+    "B318",  # xml_bad_minidom
+    "B319",  # xml_bad_pulldom
+    "B320",  # xml_bad_etree
+    "B321",  # ftplib
+    "B322",  # input
+    "B323",  # unverified_context
+    "B324",  # hashlib_new_insecure
+    "B325",  # tempnam
+    "B401",  # import_telnetlib
+    "B402",  # import_ftplib
+    "B403",  # import_pickle
+    "B404",  # import_subprocess
+    "B405",  # import_xml_etree
+    "B406",  # import_xml_sax
+    "B407",  # import_xml_expat
+    "B408",  # import_xml_minidom
+    "B409",  # import_xml_pulldom
+    "B410",  # import_lxml
+    "B411",  # import_xmlrpclib
+    "B412",  # import_httplib
+    "B413",  # import_urllib
+    "B414",  # import_urllib2
+    "B415",  # import_socket
+    "B501",  # request_with_no_cert_validation
+    "B502",  # ssl_with_bad_version
+    "B503",  # ssl_with_bad_defaults
+    "B504",  # ssl_with_no_verification
+    "B505",  # weak_cryptographic_key
+    "B506",  # yaml_load
+    "B507",  # ssh_no_host_key_verification
+    "B601",  # paramiko_calls
+    "B602",  # subprocess_popen_with_shell_equals_true
+    "B603",  # subprocess_without_shell_equals_true
+    "B604",  # any_other_function_with_shell_equals_true
+    "B605",  # start_process_with_a_shell
+    "B606",  # start_process_with_partial_path
+    "B607",  # start_process_with_partial_path
+    "B608",  # hardcoded_sql_expressions
+    "B609",  # linux_commands_wildcard_injection
+    "B610",  # django_extra_used
+    "B611",  # django_rawsql_used
+    "B701",  # jinja2_autoescape_false
+    "B702",  # use_of_mako_templates
+    "B703",  # django_mark_safe
+]
+
+[tool.safety]
+ignore = []
+key = ""
+db = ""
+proxy = ""
+json = false
+full_report = false
+bare = false
+cache = 3600
+
+[tool.pip-audit]
+format = "json"
+output = "pip-audit-report.json"
+desc = false
+skip = []
+requirement = []
+local = false
+dry_run = false
+
+[tool.dependabot]
+# Configuration for GitHub Dependabot
+# See .github/dependabot.yml for actual configuration

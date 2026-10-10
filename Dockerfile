@@ -1,0 +1,130 @@
+# TensorFlow Dockerfile
+# Multi-stage build for minimal production image
+# Build: docker build -t tensorflow:latest .
+# Run: docker run -it --rm tensorflow:latest python -c "import tensorflow as tf; print(tf.__version__)"
+
+# =============================================================================
+# Build Stage
+# =============================================================================
+FROM ubuntu:22.04 AS builder
+
+# Prevent interactive prompts during package installation
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install build dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    git \
+    python3 \
+    python3-dev \
+    python3-pip \
+    python3-venv \
+    pkg-config \
+    zip \
+    g++ \
+    zlib1g-dev \
+    unzip \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Bazel
+ENV BAZEL_VERSION=6.3.2
+RUN curl -fSL "https://github.com/bazelbuild/bazel/releases/download/${BAZEL_VERSION}/bazel-${BAZEL_VERSION}-installer-linux-x86_64.sh" -o /tmp/bazel-installer.sh \
+    && chmod +x /tmp/bazel-installer.sh \
+    && /tmp/bazel-installer.sh --prefix=/usr/local \
+    && rm /tmp/bazel-installer.sh
+
+# Set up Python environment
+RUN python3 -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Upgrade pip and install build dependencies
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel \
+    && pip install --no-cache-dir numpy==1.24.3 six==1.16.0 protobuf==3.20.3
+
+# Copy source code
+WORKDIR /tensorflow
+COPY . .
+
+# Configure TensorFlow build (CPU only for minimal image)
+# For GPU support, use Dockerfile.gpu instead
+RUN ./configure <<EOF
+/usr/bin/python3
+n
+n
+EOF
+
+# Build TensorFlow pip package
+RUN bazel build --config=opt //tensorflow/tools/pip_package:build_pip_package \
+    && ./bazel-bin/tensorflow/tools/pip_package/build_pip_package /tmp/tensorflow_pkg
+
+# =============================================================================
+# Runtime Stage (Minimal)
+# =============================================================================
+FROM ubuntu:22.04 AS runtime
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install runtime dependencies only
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 \
+    python3-venv \
+    libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set up Python environment
+RUN python3 -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Copy built package from builder
+COPY --from=builder /tmp/tensorflow_pkg /tmp/tensorflow_pkg
+
+# Install TensorFlow
+RUN pip install --no-cache-dir /tmp/tensorflow_pkg/tensorflow-*.whl \
+    && rm -rf /tmp/tensorflow_pkg
+
+# Create non-root user for security
+RUN groupadd -r tensorflow && useradd -r -g tensorflow -d /home/tensorflow -m tensorflow
+USER tensorflow
+WORKDIR /home/tensorflow
+
+# Set TensorFlow environment variables
+ENV TF_CPP_MIN_LOG_LEVEL=1
+ENV PYTHONUNBUFFERED=1
+
+# Default command
+CMD ["python3", "-c", "import tensorflow as tf; print('TensorFlow version:', tf.__version__)"]
+
+# =============================================================================
+# Development Stage (Optional - for development containers)
+# =============================================================================
+FROM builder AS development
+
+# Install development tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    vim \
+    htop \
+    tmux \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python development dependencies
+RUN pip install --no-cache-dir \
+    pytest==7.4.0 \
+    pytest-cov==4.1.0 \
+    pytest-xdist==3.3.1 \
+    pytest-timeout==2.1.0 \
+    pylint==3.0.0 \
+    black==23.0.0 \
+    isort==5.12.0 \
+    mypy==1.5.0 \
+    bandit==1.7.0 \
+    safety==2.3.0 \
+    pip-audit==2.6.0 \
+    ipython==8.14.0 \
+    jupyter==1.0.0
+
+# Switch to non-root user
+USER tensorflow
+WORKDIR /home/tensorflow
+
+CMD ["bash"]
